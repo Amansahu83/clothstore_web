@@ -115,7 +115,7 @@ export default function Cart() {
                 <div className="flex-shrink-0">
                   {item.image_url ? (
                     <img
-                      src={`https://clothstore-98w2.onrender.com/api${item.image_url}`}
+                      src={`http://localhost:5000/api${item.image_url}`}
                       alt={item.name}
                       className="w-24 h-24 object-cover rounded-lg"
                     />
