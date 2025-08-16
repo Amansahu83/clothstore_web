@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST="{\"..\\\\components\\\\Layout.js -> ./AdminNotifications\":{\"id\":\"..\\\\components\\\\Layout.js -> ./AdminNotifications\",\"files\":[\"static/chunks/components_AdminNotifications_js.js\"]}}"
