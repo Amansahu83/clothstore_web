@@ -118,14 +118,6 @@ export default function Login() {
               </Link>
             </p>
           </div>
-          
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-semibold text-blue-900 mb-2">🎆 Demo Accounts</h3>
-            <div className="text-sm text-blue-800 space-y-1">
-              <p><strong>Admin:</strong> admin@clothstore.com / password</p>
-              <p><strong>User:</strong> user@clothstore.com / user123</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
