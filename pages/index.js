@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { products } from '../utils/api';
+import { getUser } from '../utils/auth';
 
 export default function Home() {
   const [productList, setProductList] = useState([]);
@@ -8,9 +9,11 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showNotification, setShowNotification] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     fetchProducts();
+    setUser(getUser());
   }, []);
 
   useEffect(() => {
@@ -161,13 +164,15 @@ export default function Home() {
                 <span className="text-sm text-gray-500">📦 {product.stock_quantity} in stock</span>
               </div>
               
-              <button
-                onClick={() => addToCart(product)}
-                disabled={product.stock_quantity === 0}
-                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-              >
-                {product.stock_quantity === 0 ? '🚫 Out of Stock' : '🛒 Add to Cart'}
-              </button>
+              {user?.role !== 'admin' && (
+                <button
+                  onClick={() => addToCart(product)}
+                  disabled={product.stock_quantity === 0}
+                  className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {product.stock_quantity === 0 ? '🚫 Out of Stock' : '🛒 Add to Cart'}
+                </button>
+              )}
             </div>
           </div>
         ))}

@@ -68,17 +68,21 @@ export default function Layout({ children }) {
                       <AdminNotifications />
                     </>
                   )}
-                  <Link href="/cart" className="nav-link relative">
-                    🛒 Cart
-                    {cartCount > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
-                        {cartCount}
-                      </span>
-                    )}
-                  </Link>
-                  <Link href="/orders" className="nav-link">
-                    📦 Orders
-                  </Link>
+                  {!isAdmin() && (
+                    <>
+                      <Link href="/cart" className="nav-link relative">
+                        🛒 Cart
+                        {cartCount > 0 && (
+                          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                            {cartCount}
+                          </span>
+                        )}
+                      </Link>
+                      <Link href="/orders" className="nav-link">
+                        📦 Orders
+                      </Link>
+                    </>
+                  )}
                   <div className="flex items-center space-x-3">
                     <span className="text-gray-700 font-medium">👋 Hi, {user.name}</span>
                     <button
@@ -126,12 +130,16 @@ export default function Layout({ children }) {
                         ⚙️ Admin
                       </Link>
                     )}
-                    <Link href="/cart" className="mobile-nav-link">
-                      🛒 Cart ({cartCount})
-                    </Link>
-                    <Link href="/orders" className="mobile-nav-link">
-                      📦 Orders
-                    </Link>
+                    {!isAdmin() && (
+                      <>
+                        <Link href="/cart" className="mobile-nav-link">
+                          🛒 Cart ({cartCount})
+                        </Link>
+                        <Link href="/orders" className="mobile-nav-link">
+                          📦 Orders
+                        </Link>
+                      </>
+                    )}
                     <div className="px-4 py-2 text-gray-700">👋 Hi, {user.name}</div>
                     <button
                       onClick={handleLogout}
@@ -171,8 +179,12 @@ export default function Layout({ children }) {
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <div className="space-y-2">
                 <Link href="/" className="block text-gray-400 hover:text-white transition-colors">Home</Link>
-                <Link href="/cart" className="block text-gray-400 hover:text-white transition-colors">Cart</Link>
-                <Link href="/orders" className="block text-gray-400 hover:text-white transition-colors">Orders</Link>
+                {!user || user.role !== 'admin' ? (
+                  <>
+                    <Link href="/cart" className="block text-gray-400 hover:text-white transition-colors">Cart</Link>
+                    <Link href="/orders" className="block text-gray-400 hover:text-white transition-colors">Orders</Link>
+                  </>
+                ) : null}
               </div>
             </div>
             <div>

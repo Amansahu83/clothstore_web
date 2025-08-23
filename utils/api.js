@@ -43,4 +43,9 @@ export const orders = {
   cancel: (id) => api.put(`/orders/${id}/cancel`),
 };
 
+export const payments = {
+  createOrder: (amount) => api.post('/payments/create-order', { amount }),
+  verifyPayment: (paymentData) => api.post('/payments/verify', paymentData),
+};
+
 export default api;

@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { orders } from '../utils/api';
 import { getUser } from '../utils/auth';
+import RazorpayPayment from '../components/RazorpayPayment';
 
 export default function Cart() {
   const [cart, setCart] = useState([]);
@@ -43,37 +44,26 @@ export default function Cart() {
     return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
-  const handleCheckout = async () => {
-    const user = getUser();
-    if (!user) {
-      router.push('/login');
-      return;
-    }
+  const handlePaymentSuccess = (paymentData) => {
+    localStorage.removeItem('cart');
+    setShowSuccess(true);
+    setTimeout(() => router.push('/orders'), 2000);
+  };
 
-    if (!shippingAddress.trim()) {
-      alert('Please enter shipping address');
-      return;
-    }
+  const handlePaymentError = (error) => {
+    alert(error);
+  };
 
-    setLoading(true);
-    try {
-      const orderData = {
-        items: cart.map(item => ({
-          product_id: item.id,
-          quantity: item.quantity
-        })),
-        shipping_address: shippingAddress
-      };
-
-      await orders.create(orderData);
-      localStorage.removeItem('cart');
-      setShowSuccess(true);
-      setTimeout(() => router.push('/orders'), 2000);
-    } catch (error) {
-      alert(error.response?.data?.error || 'Failed to place order');
-    } finally {
-      setLoading(false);
-    }
+  const getOrderData = () => {
+    return {
+      items: cart.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      total_amount: parseFloat(getTotalPrice()),
+      shipping_address: shippingAddress
+    };
   };
 
   if (cart.length === 0) {
@@ -212,20 +202,21 @@ export default function Cart() {
             />
           </div>
           
-          <button
-            onClick={handleCheckout}
-            disabled={loading || !shippingAddress.trim()}
-            className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-6 rounded-lg font-semibold shadow-lg hover:from-green-600 hover:to-green-700 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-          >
-            {loading ? (
-              <>
-                <span className="animate-spin mr-2">⏳</span>
-                Processing Order...
-              </>
-            ) : (
-              '🚀 Place Order'
-            )}
-          </button>
+          {!shippingAddress.trim() ? (
+            <button
+              disabled
+              className="w-full bg-gray-400 text-white py-4 px-6 rounded-lg font-semibold cursor-not-allowed"
+            >
+              📦 Enter Shipping Address
+            </button>
+          ) : (
+            <RazorpayPayment
+              amount={parseFloat(getTotalPrice())}
+              orderData={getOrderData()}
+              onSuccess={handlePaymentSuccess}
+              onError={handlePaymentError}
+            />
+          )}
           
           <div className="mt-4 text-center text-sm text-gray-500">
             🔒 Secure checkout powered by ClothStore
